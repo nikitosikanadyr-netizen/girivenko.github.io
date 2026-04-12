@@ -2,13 +2,14 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Угадай число PRO</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <h1>🎯 Угадай число</h1>
+  <h1> Угадай число</h1>
 
   <input type="text" id="playerName" placeholder="Ваше имя">
 
@@ -24,16 +25,14 @@
     <p id="message"></p>
     <p>⏱ Время: <span id="timer">0</span> сек</p>
 
-    <input type="number" id="guessInput">
+    <input type="number" id="guessInput" placeholder="Введите число">
     <button onclick="checkGuess()">Проверить</button>
     <button onclick="newGame()">Новая игра</button>
   </div>
 
-  <h2>🏆 Рекорды</h2>
+  <h2> Рекорды</h2>
   <ul id="leaderboard"></ul>
 </div>
-
-<audio id="winSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
 
 <script src="script.js"></script>
 </body>

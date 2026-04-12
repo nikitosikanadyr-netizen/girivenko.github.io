@@ -5,12 +5,18 @@ let maxNumber;
 let timer;
 let time = 0;
 
+//  Запуск игры
 function startGame() {
-  playerName = document.getElementById("playerName").value.trim();
+  const nameInput = document.getElementById("playerName");
+  playerName = nameInput.value.trim();
   maxNumber = Number(document.getElementById("difficulty").value);
 
-  if (!playerName) {
-    alert("Введите имя!");
+  nameInput.classList.remove("error-input");
+
+  if (playerName === "") {
+    showMessage("! Введите имя игрока", "error");
+    nameInput.classList.add("error-input");
+    nameInput.focus();
     return;
   }
 
@@ -18,6 +24,7 @@ function startGame() {
   newGame();
 }
 
+//  Новая игра
 function newGame() {
   secretNumber = Math.floor(Math.random() * maxNumber) + 1;
   attempts = 0;
@@ -29,15 +36,29 @@ function newGame() {
     document.getElementById("timer").textContent = time;
   }, 1000);
 
-  document.getElementById("message").textContent = `Число от 1 до ${maxNumber}`;
+  showMessage(`Число от 1 до ${maxNumber}`, "hint");
   document.getElementById("guessInput").value = "";
 }
 
+//  Проверка числа
 function checkGuess() {
-  const guess = Number(document.getElementById("guessInput").value);
+  const input = document.getElementById("guessInput");
+  const value = input.value.trim();
 
-  if (!guess || guess < 1 || guess > maxNumber) {
-    alert("Некорректный ввод!");
+  if (value === "") {
+    showMessage("! Введите число", "error");
+    return;
+  }
+
+  if (isNaN(value)) {
+    showMessage("! Это не число", "error");
+    return;
+  }
+
+  const guess = Number(value);
+
+  if (guess < 1 || guess > maxNumber) {
+    showMessage(`! Число от 1 до ${maxNumber}`, "error");
     return;
   }
 
@@ -45,26 +66,29 @@ function checkGuess() {
 
   if (guess === secretNumber) {
     clearInterval(timer);
-
-    document.getElementById("message").textContent =
-      `🎉 Угадано за ${attempts} попыток и ${time} сек!`;
-
-    // document.getElementById("winSound").play();
-
+    showMessage(`🎉 Угадано за ${attempts} попыток и ${time} сек`, "success");
     saveResult();
     updateLeaderboard();
-
   } else if (guess < secretNumber) {
-    document.getElementById("message").textContent = "⬆️ Больше";
+    showMessage("⬆️ Больше", "hint");
   } else {
-    document.getElementById("message").textContent = "⬇️ Меньше";
+    showMessage("⬇️ Меньше", "hint");
   }
 
-  document.getElementById("guessInput").value = "";
+  input.value = "";
 }
 
+//  Сообщения
+function showMessage(text, type = "") {
+  const msg = document.getElementById("message");
+  msg.textContent = text;
+  msg.className = type;
+}
+
+//  Сохранение результата
 function saveResult() {
-  let records = JSON.parse(localStorage.getItem("records")) || [];
+  let records =
+  JSON.parse(localStorage.getItem("records")) || [];
 
   records.push({
     name: playerName,
@@ -83,12 +107,12 @@ function saveResult() {
   localStorage.setItem("records", JSON.stringify(records));
 }
 
+//  Обновление таблицы
 function updateLeaderboard() {
   const list = document.getElementById("leaderboard");
   list.innerHTML = "";
 
-  let records =
- JSON.parse(localStorage.getItem("records")) || [];
+  let records = JSON.parse(localStorage.getItem("records")) || [];
 
   records.forEach((r, i) => {
     const li = document.createElement("li");
@@ -97,4 +121,26 @@ function updateLeaderboard() {
   });
 }
 
-window.onload = updateLeaderboard; 
+//  События (Enter + очистка ошибки)
+window.onload = function () {
+  updateLeaderboard();
+
+  // Enter для числа
+  document.getElementById("guessInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      checkGuess();
+    }
+  });
+
+  // Enter для имени
+  document.getElementById("playerName").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      startGame();
+    }
+  });
+
+  // Убрать красную подсветку при вводе имени
+  document.getElementById("playerName").addEventListener("input", function() {
+    this.classList.remove("error-input");
+  });
+};
