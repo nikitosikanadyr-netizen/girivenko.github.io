@@ -66,7 +66,7 @@ function checkGuess() {
 
   if (guess === secretNumber) {
     clearInterval(timer);
-    showMessage(`🎉 Угадано за ${attempts} попыток и ${time} сек`, "success");
+    showMessage(` Угадано за ${attempts} попыток и ${time} сек`, "success");
     saveResult();
     updateLeaderboard();
   } else if (guess < secretNumber) {
