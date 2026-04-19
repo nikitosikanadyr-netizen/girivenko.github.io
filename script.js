@@ -11,7 +11,7 @@ function startGame() {
   playerName = nameInput.value.trim();
   maxNumber = Number(document.getElementById("difficulty").value);
 
-  nameInput.classList.remove("error-input");
+  // nameInput.classList.remove("error-input");
 
   if (playerName === "") {
     showMessage("! Введите имя игрока", "error");
